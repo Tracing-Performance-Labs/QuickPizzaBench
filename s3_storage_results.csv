@@ -1,2 +1,4 @@
 configuration,total objects,total size
 custom+http+json+gzip,157,3.2 MiB
+custom+grpc,148,18.6 MiB
+custom+grpc+gzip,57,935.6 KiB
