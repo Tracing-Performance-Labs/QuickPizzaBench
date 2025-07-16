@@ -26,22 +26,23 @@ The test suite evaluates different collector configurations:
 
 ```bash
 # Run a specific benchmark configuration
-./bench.sh custom-http-json-gzip
+./scripts/bench.sh custom-http-json-gzip
 
 # Run K6 directly with custom base URL
-BASE_URL=http://your-server:3333 k6 run k6-quickpizza.js
+BASE_URL=http://your-server:3333 k6 run scripts/k6-quickpizza.js
 
 # Run basic test
-k6 run k6-quickpizza.js
+k6 run scripts/k6-quickpizza.js
 ```
 
 ## Test Configuration
 
-The K6 script (`k6-quickpizza.js`) runs with:
+The K6 script (`scripts/k6-quickpizza.js`) runs with:
 - **20 virtual users** for **60 seconds**
 - POST requests to `/api/pizza` endpoint
 - JSON payload with pizza restrictions
 - Authorization token: `abcdef0123456789`
+- **Note**: No sleep between requests (stress test mode)
 
 ## Infrastructure Deployment
 
@@ -50,7 +51,7 @@ Deploy test infrastructure on AWS using the provided CloudFormation template:
 ```bash
 aws cloudformation create-stack \
   --stack-name quickpizza-benchmark \
-  --template-body file://quickpizza-cf-template.yml \
+  --template-body file://templates/quickpizza-cf-template.yml \
   --parameters ParameterKey=KeyName,ParameterValue=your-key \
                ParameterKey=S3BucketName,ParameterValue=your-unique-bucket
 ```
@@ -63,15 +64,29 @@ aws cloudformation create-stack \
 
 ## Results
 
-Benchmark results are automatically saved as compressed CSV files with naming pattern:
+Benchmark results are stored in the `datasets/` directory as compressed CSV files with naming pattern:
 ```
-DDMMYY-quickpizza-<config>-20vus-60s-t3.medium.gz
+datasets/DDMMYY-quickpizza-<config>-20vus-60s-t3.medium.gz
 ```
 
 Example configurations tested:
 - `custom-http-json` vs `default-http-json`
 - `custom-grpc` vs `custom-grpc-gzip`  
 - `default-no-collector` (baseline)
+
+## Data Visualization
+
+Visualize request timing data using the provided plotting script:
+
+```bash
+# Install dependencies
+pip install -r scripts/requirements.txt
+
+# Plot time series for a specific benchmark
+python3 scripts/plot_request_times.py datasets/160725-quickpizza-custom-grpc-20vus-60s-t3.medium.gz
+```
+
+**Output**: Time series plot with P95 and P99 reference lines saved as PNG.
 
 ## Environment Variables
 
@@ -95,6 +110,22 @@ Sample payload:
   "maxNumberOfToppings": 6,
   "minNumberOfToppings": 2
 }
+```
+
+## Project Structure
+
+```
+QuickPizzaBench/
+├── datasets/              # Benchmark result files (.gz)
+├── scripts/               # Benchmark and analysis scripts
+│   ├── bench.sh          # Benchmark runner
+│   ├── k6-quickpizza.js  # K6 load test script
+│   ├── plot_request_times.py  # Visualization script
+│   └── requirements.txt  # Python dependencies
+├── templates/             # Infrastructure templates
+│   └── quickpizza-cf-template.yml
+├── AGENTS.md             # Agent guidelines
+└── README.md
 ```
 
 ## Contributing
