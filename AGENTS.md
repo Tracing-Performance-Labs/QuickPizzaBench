@@ -36,3 +36,21 @@ This is a K6 performance testing project for benchmarking OTEL collectors. Main 
 - Content-Type: `application/json`
 - Authorization: `token abcdef0123456789`
 - Endpoint: `POST /api/pizza` with JSON payload containing restrictions object
+
+## Dataset Analysis & Visualization Scripts
+
+### Dataset Format
+Compressed K6 benchmark results (`.gz` files) contain CSV data with columns:
+- `metric_name` - Type of metric (http_reqs, http_req_duration, etc.)
+- `timestamp` - Unix timestamp 
+- `metric_value` - Metric value
+- Additional metadata columns (method, status, url, etc.)
+
+### Available Visualization Scripts
+- `scripts/plot_request_times.py <file.gz>` - Time series plot of HTTP request durations with P95/P99 percentile lines
+- `scripts/plot_rps_cdf.py <file.gz>` - CDF (Cumulative Distribution Function) of requests per second
+
+### Key Metrics for Analysis
+- `http_reqs` - Count requests to calculate RPS
+- `http_req_duration` - Response times for latency analysis
+- `http_req_failed` - Failed request rate
