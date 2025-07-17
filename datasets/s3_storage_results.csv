@@ -1,4 +1,4 @@
-configuration,total objects,total size
+date,configuration,total objects,total size
 custom+http+json+gzip,157,3.2 MiB
-custom+grpc,148,18.6 MiB
-custom+grpc+gzip,57,935.6 KiB
+17/07/2025,quickpizza-custom-grcp-gzip,349,6.0 MiB
+17/07/2025,quickpizza-custom-grpc-bucket,359,44.7 MiB
