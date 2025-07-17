@@ -101,3 +101,32 @@ Compressed K6 benchmark results (`.gz` files) contain CSV data with columns:
 - **For engineering analysis:** Use `both` method to show raw data context alongside trends
 - **Always include percentile reference lines** (P50, P95, P99) for performance analysis
 - **Use consistent smoothing parameters** across configs for fair comparison
+
+## Session Notes & Key Findings
+
+### Performance vs Storage Trade-off Analysis
+- **Custom OTEL collector with deduplication processor results:**
+  - Performance cost: ~5% throughput reduction (55.1 → 52.2 RPS)
+  - Latency impact: +30ms P95 latency increase (656ms → 685ms)
+  - Storage benefit: 17-95% storage reduction depending on configuration
+  - Best config: Custom gRPC+gzip (95% storage savings, 6.0 MiB vs 120.1 MiB baseline)
+
+### Object Count vs Storage Size Relationship
+- **Important finding:** More objects doesn't always mean more storage
+- Custom gRPC+gzip: +3% more objects but 95% less total storage
+- Deduplication creates more granular files but achieves massive compression benefits
+- Use side-by-side charts to show both metrics for complete storage analysis
+
+### Benchmark Analysis Workflow
+1. Generate smoothed time series plots (`plot_request_times_smooth.py --method both`)
+2. Generate smoothed CDF plots (`plot_rps_cdf_smooth.py --method both`) 
+3. Create storage comparison charts (`plot_storage_comparison.py` for dual bar charts)
+4. Analyze performance metrics vs storage savings for ROI calculation
+
+### Optimization Strategies for Deduplication Performance
+- Hot path vs cold path separation (background deduplication)
+- Smart hashing & fingerprinting (content hashes vs full comparison)
+- Time-window based deduplication (sliding windows)
+- Sampling-based approaches (dedupe high-frequency traces only)
+- Hardware optimizations (concurrent hash maps, memory pooling)
+- Protocol-specific optimizations (gRPC streaming, batch processing)
