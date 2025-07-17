@@ -1,4 +1,6 @@
 date,configuration,total objects,total size
+17/07/2025,quickpizza-http-json-bucket,327,100.1 MiB
+17/07/2025,quickpizza-default-collector-bucket,340,120.1 MiB
 17/07/2025,quickpizza-custom-http-json-gzip-bucket,326,7.0 MiB
 17/07/2025,quickpizza-custom-grcp-gzip,349,6.0 MiB
 17/07/2025,quickpizza-custom-grpc-bucket,359,44.7 MiB
